@@ -49,7 +49,8 @@ class App extends React.Component{
     super(props)
     this.state = {
       data: arr,
-      search: ""
+      search: "",
+      filter: 'all'
     }
   }
   onDelete = (id) => {
@@ -88,9 +89,22 @@ class App extends React.Component{
   onUpdateSearch = (search) => {
     this.setState({search})
   }
+  filterData = (arr, filter) => {
+    switch(filter){
+      case 'completed':
+        return arr.filter(item => item.active)
+      case 'big-size':
+        return arr.filter(item => item.size > 10)
+      default:
+        return arr
+    }
+  }
+  onFilterSelect = (filter) => {
+    this.setState({filter})
+  }
   render(){
-    const {data, search} = this.state
-    const allData = this.onSearch(data, search)
+    const {data, search, filter} = this.state
+    const allData = this.filterData(this.onSearch(data, search), filter) 
     return (
       <>
        <div className="app">
@@ -103,7 +117,7 @@ class App extends React.Component{
                data = {allData}
                onDelete = {this.onDelete}
                onToggleItemActive = {this.onToggleItemActive} />
-            <Filter />
+            <Filter filter = {filter} onFilterSelect = {this.onFilterSelect} />
           </div>
           <img src="/first.png" alt="" />
         </div>
